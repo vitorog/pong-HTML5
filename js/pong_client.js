@@ -13,7 +13,9 @@ function Setup() {
 
     PONG_SERVER = new PongServer();
     PONG_SERVER.StartGame();
-    PLAYERS_PADDLE_X = [30, CANVAS.width - 30 - PONG_SERVER.paddle_width];    
+
+    window.addEventListener("keydown", this.Input, true);
+    window.addEventListener("keyup", this.Input, true);
 }
 
 function ClearScreen() {
@@ -30,28 +32,28 @@ function Draw(game_state) {
 
     //Draw middle line
     CONTEXT.fillStyle = "FFFFFF";
-    
+
     var middle_x = CANVAS.width / 2 - (PONG_SERVER.middle_blocks_width / 2);
     var y = 0;
     var i = 1;
-    while(y <= CANVAS.height){
+    while (y <= CANVAS.height) {
         y = ((i - 1) * PONG_SERVER.middle_blocks_height) + ((i - 1) * PONG_SERVER.middle_blocks_spacing);
         CONTEXT.fillRect(middle_x, y, PONG_SERVER.middle_blocks_width, PONG_SERVER.middle_blocks_height);
         i++;
     }
-    
+
     //Draw score
-    var score = game_state.score;    
+    var score = game_state.score;
     CONTEXT.fillStyle = "white";
     CONTEXT.font = "bold 75px Arial";
     CONTEXT.fillText(parseInt(score[0]), CANVAS.width / 4, 75);
     CONTEXT.fillText(parseInt(score[1]), 3 * CANVAS.width / 4, 75);
 
     //Draw paddles
-    var players_y = game_state.players_y;
+    var players_pos = game_state.players_pos;
     //var players_y = [CANVAS.height / 2, CANVAS.height / 2];
-    CONTEXT.fillRect(PLAYERS_PADDLE_X[0], players_y[0] - PONG_SERVER.paddle_height / 2, PONG_SERVER.paddle_width, PONG_SERVER.paddle_height);
-    CONTEXT.fillRect(PLAYERS_PADDLE_X[1], players_y[1] - PONG_SERVER.paddle_height / 2, PONG_SERVER.paddle_width, PONG_SERVER.paddle_height);
+    CONTEXT.fillRect(players_pos[0][0] - PONG_SERVER.paddle_width / 2, players_pos[0][1] - PONG_SERVER.paddle_height / 2, PONG_SERVER.paddle_width, PONG_SERVER.paddle_height);
+    CONTEXT.fillRect(players_pos[1][0] - PONG_SERVER.paddle_width / 2, players_pos[1][1] - PONG_SERVER.paddle_height / 2, PONG_SERVER.paddle_width, PONG_SERVER.paddle_height);
 
     //Draw ball
     var ball_pos = game_state.ball.position;
@@ -64,7 +66,49 @@ function Draw(game_state) {
 function Logic() {
 }
 
-function Input() {
+function Input(evt) {    
+    switch (evt.type) {
+        case "keydown":
+            switch (evt.keyCode) {
+                /* Player 1 Up arrow */
+                case 38:
+                    PONG_SERVER.SetMessage("UP_PRESSED", 1);                    
+                    break;
+                    /* Player 1 Down arrow */
+                case 40:
+                    PONG_SERVER.SetMessage("DOWN_PRESSED", 1);
+                    break;
+                    /* Player 2 Up arrow */
+                case 87:
+                    PONG_SERVER.SetMessage("UP_PRESSED", 2);                    
+                    break;
+                    /* Player 2 Down arrow */
+                case 83:
+                    PONG_SERVER.SetMessage("DOWN_PRESSED", 2);
+                    break;
+            }
+            break;
+        case "keyup":
+            switch (evt.keyCode) {                
+                /* Player 1 Up arrow */
+                case 38:
+                    PONG_SERVER.SetMessage("UP_RELEASED", 1);
+                    break;
+                    /* Player 1 Down arrow */
+                case 40:
+                    PONG_SERVER.SetMessage("UP_RELEASED", 1);
+                    break;
+                    /* Player 1 Down arrow */
+                case 87:
+                    PONG_SERVER.SetMessage("UP_PRESSED", 2);                    
+                    break;
+                    /* Player 2 Down arrow */
+                case 83:
+                    PONG_SERVER.SetMessage("DOWN_RELEASED", 2);
+                    break;
+            }
+            break;
+    }
 }
 
 function Update() {
@@ -73,9 +117,9 @@ function Update() {
     Draw(PONG_SERVER.game_state);
 }
 
-function main() {    
+function main() {
     Setup();
-    setInterval(Update, 0);    
+    setInterval(Update, 0);
 }
 
 main();
