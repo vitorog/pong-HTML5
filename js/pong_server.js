@@ -16,6 +16,7 @@
 
 
 PongServer.prototype.SetMessage = function (msg, id) {
+    console.log(msg);
     switch (msg) {
         case "UP_PRESSED":
             this.paddle_dir[id - 1] = -1;
@@ -23,10 +24,10 @@ PongServer.prototype.SetMessage = function (msg, id) {
         case "DOWN_PRESSED":
             this.paddle_dir[id - 1] = 1;
             break;
-        case "UP_RELEASED":
+        case "UP_RELEASED":            
             this.paddle_dir[id - 1] = 0;
             break;
-        case "DOWN_RELEASED":
+        case "DOWN_RELEASED":            
             this.paddle_dir[id - 1] = 0;
             break;
     }
@@ -63,7 +64,8 @@ PongServer.prototype.CheckBallCollisions = function () {
     //Check collision with left paddle
     if ((this.game_state.ball.position[1] >= this.game_state.players_pos[0][1] - (this.paddle_height / 2))
         && (this.game_state.ball.position[1] <= this.game_state.players_pos[0][1] + (this.paddle_height / 2))) {
-        if (this.game_state.ball.position[0] - this.ball_radius <= this.game_state.players_pos[0][0] + (this.paddle_width / 2)) {
+        if ((this.game_state.ball.position[0] - this.ball_radius <= this.game_state.players_pos[0][0] + (this.paddle_width / 2)) &&
+            (this.game_state.ball.position[0] - this.ball_radius > this.game_state.players_pos[0][0] - (this.paddle_width / 2))) {
             this.game_state.ball.direction[0] = -this.game_state.ball.direction[0];            
             return;
         }
@@ -72,7 +74,8 @@ PongServer.prototype.CheckBallCollisions = function () {
     //Check collision with right paddle
     if ((this.game_state.ball.position[1] >= this.game_state.players_pos[1][1] - (this.paddle_height / 2))
        && (this.game_state.ball.position[1] <= this.game_state.players_pos[1][1] + (this.paddle_height / 2))) {
-        if (this.game_state.ball.position[0] + this.ball_radius >= this.game_state.players_pos[1][0] - (this.paddle_width / 2)) {
+        if ((this.game_state.ball.position[0] + this.ball_radius >= this.game_state.players_pos[1][0] - (this.paddle_width / 2)) &&
+                (this.game_state.ball.position[0] + this.ball_radius < this.game_state.players_pos[1][0] + (this.paddle_width / 2))) {
             this.game_state.ball.direction[0] = -this.game_state.ball.direction[0];
             this.game_state.ball.direction[1] = -1;
             return;
@@ -84,7 +87,7 @@ PongServer.prototype.CheckBallCollisions = function () {
         this.game_state.ball.direction[1] = -this.game_state.ball.direction[1];
         return;
     }
-    
+
     //Check for score
     if (this.game_state.ball.position[0] <= 0) {
         this.PlayerScored(2);

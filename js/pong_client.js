@@ -5,8 +5,8 @@ var PONG_SERVER;
 function Setup() {
     CANVAS = document.getElementById("game_canvas");
     CONTEXT = CANVAS.getContext("2d");
-    CANVAS.width = 1024;
-    CANVAS.height = 768;
+    CANVAS.width = 640;
+    CANVAS.height = 480;
     //var size = Math.max(window.innerHeight, window.innerWidth);
     //CANVAS.width = size / 2;
     //CANVAS.height = size / 4;
